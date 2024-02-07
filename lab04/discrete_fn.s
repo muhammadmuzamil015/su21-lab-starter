@@ -76,8 +76,21 @@ main:
 # a1 is the address of the "output" array (defined above).
 # Think: why might having a1 be useful?
 f:
-    # YOUR CODE GOES HERE!
-
+    # we have a0 and a1 here in this function
+    # a0 = index , a1 = output array address
+    
+    addi t0, x0, 3      #store 3 in t0
+    
+    # as the word size is 4 bytes and if 
+    #we want to go to the next word we have to add 4
+    addi t1, x0, 4      #store 4 in t1
+    
+    # correct the index
+    add t2, a0, t0      #store actual index in t2 (-3 -> 0, -2 -> 1, -1 -> 2 and so on)
+    mul t0, t2, t1      #store the offset for address in t0
+    add a1, a1, t0      #goto the actual address where the data is (the data we want to retrieve according to index)
+    
+    lw a0, 0(a1)        # load the word from output array
     jr ra               # Always remember to jr ra after your function!
 
 print_int:

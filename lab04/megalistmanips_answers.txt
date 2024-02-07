@@ -1,0 +1,47 @@
+1. First error I found is at the start of the mapLoop label. The below line is not saving the correct address of the array of current node into t1. 
+
+	Before:
+	add t1, s0, x0      # load the address of the array of current node into t1
+	After: 
+	lw t1, 0(s0)        # load the address of the array of current node into t1 
+
+
+2. Second error I found on the comment where we are offsetting the array address by count. Previously it did not correctly calculate the offset, but now I have corrected it by incrementing the address by 4 using shift left logical and add instruction. 
+	
+	Before:
+	add t1, t1, t0      # offset the array address by the count
+	After:
+	slli t4, t0, 2
+    	add t1, t1, t4      # offset the array address by the count 
+
+3. Third error I found at the comment of load address of the next node into a0. Previously code was using “la” instruction to get the address of the next node which is incorrect because “la” is used to get the address of the label. So I changed it to “lw” instruction to get the address of the next node into a0. 
+	
+	Before:
+	la a0, 8(s0)        # load the address of the next node into a0
+	After: 
+	lw a0, 8(s0)        # load the address of the next node into a0 
+
+
+4. Fourth error I found in the comment was to put the address of a function back to a1. Previously the code was using “lw” instruction to put the address which is wrong. So I corrected it by using the “la” instruction to get the address of function mystery back into a1.
+
+	Before:
+	lw a1, 0(s1)        # put the address of the function back into a1 to prepare for the recursion
+	After: 
+	la a1, mystery      # put the address of the function back into a1 to prepare for the recursion
+	
+5. Fifth error I noticed is about push and pop of registers into the stack.  As the stack is growing downward so I just corrected the index to pop the register first from 0 index (last in, first out) and then move upwards. 
+
+	Before:
+	lw s0, 8(sp)
+	lw s1, 4(sp)
+	lw ra, 0(sp)
+	addi sp, sp, 12
+
+	After: 
+	lw ra, 0(sp)
+	lw s1, 4(sp)
+	lw s0, 8(sp)
+	addi sp, sp, 12
+
+Above mentioned are the errors which I found and after correcting them, the code is working fine.
+
